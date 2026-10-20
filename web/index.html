@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#172d47">
+<meta name="description" content="Your private daily workspace for the next chapter.">
+<title>Alwin — life in motion</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<section id="login" class="login-page" hidden>
+ <div class="login-wordmark">alwin<span>.</span></div>
+ <div class="login-card">
+  <p class="eyebrow">YOUR PRIVATE SPACE</p>
+  <h1>A little closer,<br>every day.</h1>
+  <p class="muted">Your plans, your people, your next chapter.<br>One place to find the next step.</p>
+  <form id="login-form">
+   <label for="password">Dashboard password</label>
+   <input id="password" type="password" autocomplete="current-password" required maxlength="1024">
+   <button class="primary" type="submit">Open my dashboard <span aria-hidden="true">→</span></button>
+   <p id="login-error" role="alert"></p>
+  </form>
+ </div>
+ <p class="login-foot">A quiet place to keep moving.</p>
+</section>
+<div id="shell" class="shell" hidden>
+ <aside class="sidebar">
+  <a class="brand" href="#today" aria-label="Alwin home">alwin<span>.</span><small>life in motion</small></a>
+  <nav aria-label="Your workspace">
+   <a href="#today" data-view="today"><span aria-hidden="true">◫</span> <b>Today</b></a>
+   <a href="#australia" data-view="australia"><span aria-hidden="true">◎</span> <b>Australia</b></a>
+   <a href="#paige" data-view="paige"><span aria-hidden="true">♡</span> <b>For Paige</b></a>
+   <a href="#life" data-view="life"><span aria-hidden="true">◉</span> <b>My life</b></a>
+   <a href="#brain" data-view="brain"><span aria-hidden="true">▤</span> <b>Brain</b></a>
+  </nav>
+  <div class="sidebar-bottom"><span class="avatar">AN</span><div>Made for Alwin<small>Your private space</small></div><button id="logout" class="logout" aria-label="Sign out" title="Sign out">↪</button></div>
+ </aside>
+ <main id="main" tabindex="-1">
+  <header class="topbar"><p id="today-date"></p><div class="top-actions"><span id="connection" class="connection">Connecting…</span><button id="refresh" class="outline"><span aria-hidden="true">↻</span> Refresh Brain</button></div></header>
+  <div class="page-title"><div><p class="eyebrow" id="view-eyebrow">YOUR DAY, WITH INTENTION</p><h1 id="view-title">A little closer, every day.</h1><p id="view-description" class="intro">Make room for what matters. Start with one next step.</p></div><button id="add-task" class="primary" disabled>+ Add a task</button></div>
+  <div id="notices" aria-live="polite"></div>
+  <section id="workspace" aria-label="Dashboard content" aria-busy="true"><div class="loading"><span class="loading-dot"></span> Reading your source notes…</div></section>
+  <footer class="footer"><span>Small steps. A life that feels like yours.</span><span id="last-read">Waiting for BRAIN</span></footer>
+ </main>
+</div>
+<dialog id="source-dialog" class="source-dialog" aria-labelledby="source-title">
+ <div class="dialog-top"><p class="eyebrow">FROM YOUR BRAIN</p><button class="icon-button close-dialog" aria-label="Close source">×</button></div>
+ <h2 id="source-title"></h2><p id="source-meta" class="muted"></p><a id="source-link" target="_blank" rel="noreferrer">Open canonical note ↗</a>
+ <p class="source-hint">Recorded source text. Research and historical plans may need review.</p><pre id="source-content"></pre>
+</dialog>
+<dialog id="task-dialog" aria-labelledby="task-title">
+ <div class="dialog-top"><p class="eyebrow">MAKE THE NEXT STEP CONCRETE</p><button class="icon-button close-dialog" aria-label="Close task form">×</button></div>
+ <h2 id="task-title">One thing to move forward.</h2><p class="muted">This task is saved in the source note you choose.</p>
+ <form id="task-form"><label for="task-text">What needs doing?</label><input id="task-text" required maxlength="500" placeholder="A clear, small next step">
+ <label for="task-source">Save to BRAIN note</label><select id="task-source" required></select>
+ <label for="task-due">Due date <span class="optional">(optional)</span></label><input id="task-due" type="date">
+ <p id="task-error" role="alert"></p><button type="submit" class="primary">Save to Brain <span aria-hidden="true">↗</span></button></form>
+</dialog>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+</body></html>
