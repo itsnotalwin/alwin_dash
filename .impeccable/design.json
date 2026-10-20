@@ -2,12 +2,12 @@
   "version": 1,
   "platform": "web",
   "colors": {
-    "ink": "#172d47",
-    "muted": "#61738b",
-    "canvas": "#eef2f7",
+    "ink": "#1b1b1b",
+    "muted": "#626262",
+    "canvas": "#f3f3f3",
     "paper": "#ffffff",
-    "blue": "#285be0",
-    "rule": "#d5dfeb"
+    "accent": "#262626",
+    "rule": "#d8d8d8"
   },
   "typography": {
     "display": "Georgia, Times New Roman, serif",
