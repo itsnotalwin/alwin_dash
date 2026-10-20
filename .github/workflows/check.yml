@@ -4,6 +4,9 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+concurrency:
+  group: dashboard-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
@@ -25,6 +28,7 @@ jobs:
       - run: npm install --no-save --package-lock=false playwright@1.56.0
       - run: npx playwright install --with-deps chromium
       - run: node verify-ui.mjs
+      - run: python3 check-build.py --root .
       - uses: actions/upload-artifact@v4
         with:
           name: dashboard-synthetic-screenshots

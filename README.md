@@ -41,4 +41,4 @@ This is not a GitHub Pages app. No hosting account, runtime token or production 
 
 The GitHub Actions workflow additionally installs the pinned Playwright test tool, captures the actual synthetic app at desktop/mobile sizes and exercises five views, login, source inspection and horizontal overflow. On same-repository feature PRs it commits only genuine screenshot evidence and the capture note. CI never uses the private vault token.
 
-Initial local Node/browser execution was unavailable. See PROJECT.md and the feature PR for the actual verification state; no screenshot or live connection should be assumed from the concept image.
+Local execution was unavailable, so GitHub Actions performed verification. Run 39474503896 passed all 8 Node tests and browser smoke checks, and committed genuine desktop/mobile screenshots using synthetic data. No live BRAIN runtime connection or production deployment is configured. See PROJECT.md and the feature PR for the latest result.

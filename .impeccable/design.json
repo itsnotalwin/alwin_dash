@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "platform": "web",
+  "colors": {
+    "ink": "#172d47",
+    "muted": "#61738b",
+    "canvas": "#eef2f7",
+    "paper": "#ffffff",
+    "blue": "#285be0",
+    "rule": "#d5dfeb"
+  },
+  "typography": {
+    "display": "Georgia, Times New Roman, serif",
+    "body": "system-ui, sans-serif"
+  },
+  "spacing": [
+    8,
+    12,
+    16,
+    24,
+    32
+  ],
+  "corners": [
+    6,
+    9,
+    12
+  ],
+  "breakpoints": {
+    "compact": 1100,
+    "mobile": 760
+  },
+  "evidence": {
+    "desktop": "web/SCREENSHOT.png",
+    "mobile": "web/SCREENSHOT-MOBILE.png",
+    "data": "synthetic"
+  }
+}

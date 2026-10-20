@@ -1,4 +1,4 @@
 # Visual system
 A personal daily planner in Operate mode. Navy rail #172d47, mist canvas #eef2f7, white work surfaces, cobalt #285be0, muted text #61738b and rules #d5dfeb. System sans body, Georgia display, 8/12/16/24/32 spacing, restrained 6–12px corners.
 Today presents source-backed actions before the bigger move picture. Domain pages reveal more detail without implying progress. Source text is plain text in a native dialog. Dates always distinguish source update and read time. The concept’s sample destination labels were generalized in code until sourced; no private facts were copied into fixtures.
-Responsive and accessibility decisions belong in web/DESIGN.md. Capture only synthetic demo data. Genuine SCREENSHOT.png and mobile evidence are pending CI; generated concept art is not rendered proof.
+Responsive and accessibility decisions belong in web/DESIGN.md. Capture only synthetic demo data. Genuine SCREENSHOT.png and SCREENSHOT-MOBILE.png were captured from the running synthetic app in CI on 2026-10-20 and opened for inspection. Their route and viewport details are in web/DESIGN.md. Generated concept art is not rendered proof.

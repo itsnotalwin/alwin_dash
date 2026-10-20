@@ -230,6 +230,7 @@ $('task-form').addEventListener('submit',async e=>{
  finally{submit.disabled=false;}
 });
 function changeView(){state.view=location.hash.slice(1)in views?location.hash.slice(1):'today';state.search='';render();}
+document.querySelector('.skip').addEventListener('click',event=>{event.preventDefault();$('main').focus();});
 window.addEventListener('hashchange',changeView);changeView();
 $('today-date').textContent=new Intl.DateTimeFormat('en-ZA',{weekday:'long',day:'numeric',month:'long',timeZone:'Africa/Johannesburg'}).format(new Date())+' / Johannesburg';
 setInterval(()=>{if(!document.hidden&&state.data)load(true);},300000);

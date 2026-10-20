@@ -21,6 +21,9 @@ try{
  await page.screenshot({path:'web/SCREENSHOT.png',fullPage:true});
  for(const [view,title]of [['australia','Your road to Australia.'],['paige','A place for the things you make.'],['life','Keep the important things moving.'],['brain','Connected to your Brain.']]){
   await page.locator('[data-view="'+view+'"]').click();await page.locator('#view-title').filter({hasText:title}).waitFor();
+  await page.locator('.skip').focus();await page.locator('.skip').click();
+  assert.equal(await page.evaluate(()=>location.hash),'#'+view,'Skip link preserves the selected view');
+  assert.equal(await page.evaluate(()=>document.activeElement.id),'main','Skip link focuses main content');
  }
  await page.locator('[data-view="today"]').click();
  await page.getByRole('button',{name:'Read source: Move overview'}).first().click();
