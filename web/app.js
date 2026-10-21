@@ -98,7 +98,7 @@ function destination(){
  const move=state.data.notes.find(n=>n.id==='move'||n.domain==='australia');
  const target=move?.target;
  return node('aside',{class:'destination','aria-label':'The big picture'},
-  node('h3',{},'Your Australia chapter'),node('h2',{},'One step at a time.'),
+  node('h2',{},'Your Australia chapter'),node('p',{class:'destination-sub'},'One step at a time.'),
   node('div',{class:'route'},node('span',{},'Where you are'),node('span',{},'Where you’re going')),
   node('p',{class:'target'},target?'Recorded target · '+date(target):'Target dates come from your plan.',node('br'),node('strong',{},'Plans stay plans until confirmed.')));
 }
