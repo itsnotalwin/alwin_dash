@@ -15,7 +15,7 @@ Configure through the Site's protected environment settings, then redeploy:
 - `BRAIN_READ_ONLY`: 1 reads without allowing task changes. Keep this enabled for the first live read. Set 0 only when deliberately enabling task edits with a suitable credential.
 - `BRAIN_SOURCES`: optional JSON allowlist; defaults match the canonical notes.
 
-The initial deployment uses sample mode with no vault credential. It is a private published preview, not live BRAIN synchronization. Once configured, source updates appear on refresh, every five minutes while open and on return after a minute away. There is no unattended crawler or second permanent knowledge store. A restart can clear transient cache; the vault retains all real tasks.
+The initial deployment used sample mode without a vault credential. On 21 October the owner-private hosted connection verified all seven live source reads with sample mode off and task writes disabled. The credential is stored as a Site secret. Source updates appear on refresh, every five minutes while open and on return after a minute away. There is no unattended crawler or second permanent knowledge store. A restart can clear transient cache; the vault retains all real tasks.
 
 ## Verification
 

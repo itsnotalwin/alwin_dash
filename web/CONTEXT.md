@@ -8,6 +8,6 @@ Change & verify: `npm run check`; `npm test`; `npm run build`. Exercise all five
 
 Current reference adaptation uses a gray masthead, black workspace, rounded pale surfaces, organic SVG edge, horizontal desktop pills and fixed bottom phone navigation below 760px. Functional text stays at least 11px, source text stays plain, and the loading indicator stays static. Preserve monochrome and reduced-motion support in both adapters.
 
-The existing Site remains owner-private. This UI is prepared for publication; the current runtime uses `DASHBOARD_DEMO=1` and `BRAIN_READ_ONLY=1`, with no vault token. Sample mode cannot write and is not evidence of live synchronization.
+The existing Site remains owner-private. The published runtime uses `DASHBOARD_DEMO=0` and `BRAIN_READ_ONLY=1`, with a protected vault credential. Seven live source reads were verified on 21 October. Existing screenshots and CI fixtures remain synthetic; never commit private live captures.
 
 entry.html is the zero-delay GitHub Pages redirect to the private Site. It is published alone by pages.yml and is not bundled into the Worker. Keep its destination synchronized with the verified Site URL; it contains no application data or credentials.
