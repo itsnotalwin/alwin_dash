@@ -55,6 +55,10 @@ function openSource(id){
  if(n.sourceUrl){try{const url=new URL(n.sourceUrl);if(url.protocol==='https:'&&url.hostname==='github.com')$('source-link').href=url.href;else $('source-link').hidden=true;}catch{$('source-link').hidden=true;}}
  $('source-dialog').showModal();
 }
+function starIcon(){
+ const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('aria-hidden','true');
+ const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d','m12 3 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.5l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9L12 3Z');svg.append(path);return svg;
+}
 function pin(t){
  const key=taskKey(t);state.pins.has(key)?state.pins.delete(key):state.pins.add(key);
  try{localStorage.setItem('alwin-focus-v1',JSON.stringify([...state.pins].slice(-30)));}catch{}
@@ -73,7 +77,7 @@ function taskRow(t){
  const meta=node('div',{class:'task-meta'},node('span',{class:'tag '+t.domain},domainNames[t.domain]),sourceButton(n),
   t.due?node('span',{class:isPast(t.due)&&!t.done?'late':''},(isPast(t.due)&&!t.done?'Past due · ':'Due ')+date(t.due)):null);
  return node('div',{class:'task-row'+(t.done?' done':'')},box,node('div',{class:'task-copy'},node('label',{for:box.id},t.text),meta),
-  button(state.pins.has(taskKey(t))?'★':'☆',()=>pin(t),'pin-button',{'aria-pressed':state.pins.has(taskKey(t)),'aria-label':(state.pins.has(taskKey(t))?'Remove from':'Add to')+' today’s focus'}));
+  button(starIcon(),()=>pin(t),'pin-button',{'aria-pressed':state.pins.has(taskKey(t)),'aria-label':(state.pins.has(taskKey(t))?'Remove from':'Add to')+' today’s focus'}));
 }
 function focusTasks(){
  const open=tasks().filter(t=>!t.done);
@@ -93,7 +97,7 @@ function focusPanel(){
 function destination(){
  const move=state.data.notes.find(n=>n.id==='move'||n.domain==='australia');
  const target=move?.target;
- return node('aside',{class:'destination','aria-label':'The big picture'},node('p',{class:'eyebrow'},'THE BIG PICTURE'),
+ return node('aside',{class:'destination','aria-label':'The big picture'},
   node('h3',{},'Your Australia chapter'),node('h2',{},'One step at a time.'),
   node('div',{class:'route'},node('span',{},'Where you are'),node('span',{},'Where you’re going')),
   node('p',{class:'target'},target?'Recorded target · '+date(target):'Target dates come from your plan.',node('br'),node('strong',{},'Plans stay plans until confirmed.')));
@@ -113,7 +117,7 @@ function projects(){
  const notes=state.data.notes.filter(n=>n.domain==='paige');
  return node('section',{},heading('Made with care',notes.length+' source'+(notes.length===1?'':'s')),
   node('p',{class:'section-sub'},'Creative projects for Paige. Status as recorded in Brain.'),
-  notes.length?notes.map((n,i)=>node('article',{class:'project-row'},node('span',{class:'project-number'},String(i+1).padStart(2,'0')),
+  notes.length?notes.map((n,i)=>node('article',{class:'project-row'},
    node('div',{class:'project-copy'},node('h3',{},n.title),node('p',{},n.next[0]||'Open the source for the latest recorded details.'),
     node('div',{class:'task-meta'},node('span',{class:'status-label'},n.status),node('span',{},'Updated '+date(n.updated)))),
    button('›',()=>openSource(n.id),'open-project',{'aria-label':'Open '+n.title}))):node('p',{class:'empty'},'No project sources are connected yet.'));
@@ -121,7 +125,7 @@ function projects(){
 function goals(){
  const notes=state.data.notes.filter(n=>n.domain==='life'),items=notes.flatMap(n=>n.goals.map(text=>({text,n})));
  return node('section',{},heading('Keep your own rhythm'),node('p',{class:'section-sub'},'Goals from your notes. No invented streaks or progress.'),
-  items.length?items.map(({text,n},i)=>node('div',{class:'goal-row'},node('span',{},String(i+1).padStart(2,'0')),node('div',{},text,node('div',{class:'task-meta'},sourceButton(n)))))
+  items.length?items.map(({text,n},i)=>node('div',{class:'goal-row'},node('div',{},text,node('div',{class:'task-meta'},sourceButton(n)))))
   :node('p',{class:'empty'},'Your connected life notes have no “Life Goals” section yet. Add a concrete task to keep moving.'));
 }
 function actionList(domain=null,expanded=false){
@@ -168,7 +172,7 @@ function renderBrain(){
   signOutControl());
 }
 function renderSetup(){
- return node('section',{class:'sheet setup'},node('p',{class:'eyebrow'},'ONE PRIVATE CONNECTION TO MAKE'),node('h2',{},'Give your plans a place to land.'),
+ return node('section',{class:'sheet setup'},node('h2',{},'Give your plans a place to land.'),
   node('p',{class:'muted'},'The dashboard is ready for a BRAIN connection. Your private notes are never bundled with the public source.'),
   node('ol',{},node('li',{},'Set BRAIN_REPO and a vault-scoped GITHUB_TOKEN in your server’s secret settings.'),
    node('li',{},'Use a token with Contents read/write only for the vault. Read-only tokens can browse but cannot save tasks.'),
@@ -179,10 +183,10 @@ function render(){
  if(!state.data)return;
  if(state.data.hostedAuth&&!$('hosted-logout')){
   $('logout').hidden=true;
-  $('logout').after(node('a',{id:'hosted-logout',class:'logout',href:'/signout-with-chatgpt?returnTo=%2F',target:'_top','aria-label':'Sign out',title:'Sign out'},'↪'));
+  $('logout').after(node('a',{id:'hosted-logout',class:'logout',href:'/signout-with-chatgpt?returnTo=%2F',target:'_top','aria-label':'Sign out',title:'Sign out'},'Exit'));
  }
  const view=views[state.view]||views.today;
- $('view-eyebrow').textContent=view[0];$('view-title').textContent=view[1];$('view-description').textContent=view[2];
+ $('view-title').textContent=view[1];$('view-description').textContent=view[2];
  document.querySelectorAll('[data-view]').forEach(a=>a.dataset.view===state.view?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'));
  document.title=(state.view==='today'?'Alwin — life in motion':view[1]+' — Alwin');
  $('add-task').disabled=!state.data.writable||!state.data.notes.length;
@@ -194,7 +198,7 @@ function render(){
  let content;
  if(state.data.setupRequired)content=renderSetup();
  else if(!state.data.notes.length)content=node('section',{class:'sheet setup'},node('h2',{},'Your sources need attention.'),node('p',{class:'muted'},'No notes could be read. Check the connection errors above and refresh.'));
- else if(state.view==='today')content=node('div',{},node('div',{class:'sheet'},
+ else if(state.view==='today')content=node('div',{},node('div',{class:'sheet today-sheet'},
    node('div',{class:'focus-layout'},focusPanel(),destination()),timeline(),
    node('div',{class:'duo'},projects(),goals()),brainStrip()),actionList());
  else if(state.view==='brain')content=renderBrain();

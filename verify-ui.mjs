@@ -22,6 +22,8 @@ try{
  }
  await page.locator('#shell').waitFor({state:'visible'});
  await page.getByText('Sample preview · no private data').waitFor();
+ await page.evaluate(()=>document.fonts.ready);
+ assert.equal(await page.evaluate(()=>document.fonts.check('40px Lobster')),true,'Embedded display font loads under the CSP');
  if(hosted){assert.equal(await page.locator('#hosted-logout').getAttribute('target'),'_top');assert.ok((await page.locator('#hosted-logout').getAttribute('href')).startsWith('/signout-with-chatgpt'));}
  await page.screenshot({path:'web/SCREENSHOT.png',fullPage:true});
  for(const [view,title]of [['australia','Your road to Australia.'],['paige','A place for the things you make.'],['life','Keep the important things moving.'],['brain','Connected to your Brain.']]){

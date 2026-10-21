@@ -20,7 +20,7 @@ export function createDashboard(env=process.env,githubFetch=fetch) {
  const sessions=new Map(), attempts=new Map();
  let cache=null,cacheAt=0,loading=null;
  const headers={
-  'Content-Security-Policy':"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
+  'Content-Security-Policy':"default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self' data:; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
   'X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer',
   'Cache-Control':'no-store','Permissions-Policy':'camera=(), microphone=(), geolocation=()'
  };
