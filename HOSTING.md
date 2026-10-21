@@ -36,3 +36,9 @@ For a release: open the existing Site source with a fresh credential, synchroniz
 The repository website points to `https://itsnotalwin.github.io/alwin_dash/`. `pages.yml` publishes only `web/entry.html` as the Pages index, which redirects to the existing owner-private Site. This removes the missing Pages entry point without moving the authenticated backend or private vault data to static hosting. No dashboard assets, API responses, runtime credentials or real notes are uploaded to Pages.
 
 In repository Settings → Pages, the publishing Source must be **GitHub Actions**. Enabling Actions globally is separate from configuring Pages. A successful release-package workflow is not a Pages deployment. `Publish GitHub dashboard link` publishes the entry link; `Prepare Site deployment` prepares private application releases.
+
+## Verify the live connection
+
+GET `/api/brain/status` is a bounded connection check behind the same owner-private Sites dispatch boundary. It accepts the platform's service access, which authenticates at dispatch without supplying a visitor identity. Never expose this adapter independently or widen its Site audience. Ordinary note APIs and every mutation still require visitor identity.
+
+The check reads the configured notes through the actual runtime GitHub credential and parser, returning only source IDs, revision SHAs, read errors and connection/write-mode flags. It never returns note bodies, task text or tokens and uses no-store responses. Sample/setup mode returns 503; any failed source returns 502. A successful status check proves hosted source reads, not a visitor sign-in return or live writes. Keep BRAIN_READ_ONLY=1 for initial verification.
