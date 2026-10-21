@@ -1,0 +1,2 @@
+# Hosted identity
+This folder owns the Sites project identity and deployment configuration. hosting.json must retain the exact project_id returned during registration. Secrets belong in Sites runtime settings, never here. The hosted deployment is owner-private and uses platform sign-in. Build output copies this manifest unchanged. Keep HOSTING.md current when access or runtime requirements change.

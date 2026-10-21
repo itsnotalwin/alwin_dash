@@ -1,0 +1,16 @@
+{
+  "name": "alwin-dash",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.10"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.mjs",
+    "test": "node --test",
+    "check": "node --check server.mjs && node --check brain.mjs && node --check web/app.js && node --check hosted.mjs && node --check build-hosted.mjs && node --check hosted-preview.mjs",
+    "dev": "node hosted-preview.mjs",
+    "build": "node build-hosted.mjs"
+  }
+}

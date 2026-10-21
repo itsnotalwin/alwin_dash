@@ -1,0 +1,58 @@
+name: Dashboard checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+concurrency:
+  group: dashboard-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm run check
+      - run: npm test
+      - run: npm run build
+      - run: npm install --no-save --package-lock=false playwright@1.56.0
+      - run: npx playwright install --with-deps chromium
+      - run: VERIFY_HOSTED=1 node verify-ui.mjs
+      - run: python3 check-build.py --root .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dashboard-synthetic-screenshots
+          path: |
+            web/SCREENSHOT.png
+            web/SCREENSHOT-MOBILE.png
+      - name: Record genuine visual evidence on this feature branch
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          TARGET_BRANCH: ${{ github.head_ref }}
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git fetch origin "$TARGET_BRANCH"
+          CURRENT_HEAD=$(git rev-parse "origin/$TARGET_BRANCH")
+          if [ "$CURRENT_HEAD" != "$EXPECTED_HEAD" ]; then
+            echo "Branch changed during verification; no evidence committed."
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add web/SCREENSHOT.png web/SCREENSHOT-MOBILE.png web/DESIGN.md
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "Record rendered dashboard evidence [skip ci]"
+          git push origin "HEAD:$TARGET_BRANCH"
