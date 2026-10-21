@@ -19,7 +19,7 @@ The requested source repository is public. Never commit real vault contents, acc
 
 ## Capabilities and Constraints
 Today leads. Dedicated Australia, For Paige, My life, and Brain views. Automatic refresh while open. Read only an explicit list of canonical notes. Preserve unknown states and dated research. Write task completion and new tasks to the selected canonical source, with SHA conflict protection.
-The monochrome build is approved. Hosted deployment uses owner-private Sites sign-in; standalone Node hosting retains the password/session flow. The runtime vault credential is still required for live BRAIN access. Sample mode is explicit and cannot write.
+The monochrome build is approved. The user-selected visual reference establishes expressive display typography, organic dividing geometry and rounded pale working surfaces in the grayscale system. Hosted deployment uses owner-private Sites sign-in; standalone Node hosting retains the password/session flow. The runtime vault credential is still required for live BRAIN access. Sample mode is explicit and cannot write.
 
 ## Product Principles
 - A clear next action comes first.
