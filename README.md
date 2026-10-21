@@ -2,6 +2,8 @@
 
 A private daily workspace for Australia plans, creative projects for Paige, and personal goals. Today leads with a few source-backed actions; other views show recorded milestones, project next steps, goals and connection details.
 
+**Open the private dashboard:** [Alwin — life in motion](https://alwin-life-dashboard.sunsetrobin128.chatgpt.site/). The GitHub Pages address redirects here; the private backend runs on Sites.
+
 ## Start locally
 
 Requires Node.js 22.10 or newer. There are no runtime dependencies.
