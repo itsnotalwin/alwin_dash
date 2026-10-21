@@ -151,6 +151,9 @@ function noteCards(domain){
   n.next.length?n.next.slice(0,2).map(text=>node('p',{},text)):node('p',{},'No explicit next action was extracted. Read the source rather than assuming progress.'),
   button('Read the source ↗',()=>openSource(n.id)))));
 }
+function signOutControl(){
+ return state.data.hostedAuth?node('a',{href:'/signout-with-chatgpt?returnTo=%2F',target:'_top',class:'outline'},'Sign out of this dashboard'):button('Sign out of this dashboard',logout,'outline');
+}
 function renderBrain(){
  const rows=state.data.notes.map(n=>node('div',{class:'source-row'},
   node('div',{class:'source-name'},n.label,node('small',{},domainNames[n.domain]+' · '+n.status)),
@@ -162,7 +165,7 @@ function renderBrain(){
   node('p',{class:'section-sub'},'Checkbox edits and new tasks use the source SHA, then verify the saved commit. Research, project statuses and goals are shown as recorded. Refreshing a note does not reverify its claims.'),
   node('div',{class:'source-grid'},rows)),
   node('div',{class:'notice'},node('strong',{},'How updates work'),'The server reads only the configured notes. It refreshes while this page is open; when you return, it reads again. It does not infer progress from emails, repositories, or time passing. Your other agents update the canonical notes, and those changes appear here.'),
-  button('Sign out of this dashboard',logout,'outline'));
+  signOutControl());
 }
 function renderSetup(){
  return node('section',{class:'sheet setup'},node('p',{class:'eyebrow'},'ONE PRIVATE CONNECTION TO MAKE'),node('h2',{},'Give your plans a place to land.'),
@@ -174,6 +177,10 @@ function renderSetup(){
 }
 function render(){
  if(!state.data)return;
+ if(state.data.hostedAuth&&!$('hosted-logout')){
+  $('logout').hidden=true;
+  $('logout').after(node('a',{id:'hosted-logout',class:'logout',href:'/signout-with-chatgpt?returnTo=%2F',target:'_top','aria-label':'Sign out',title:'Sign out'},'↪'));
+ }
  const view=views[state.view]||views.today;
  $('view-eyebrow').textContent=view[0];$('view-title').textContent=view[1];$('view-description').textContent=view[2];
  document.querySelectorAll('[data-view]').forEach(a=>a.dataset.view===state.view?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'));

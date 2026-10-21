@@ -42,3 +42,9 @@ This is not a GitHub Pages app. No hosting account, runtime token or production 
 The GitHub Actions workflow additionally installs the pinned Playwright test tool, captures the actual synthetic app at desktop/mobile sizes and exercises five views, login, source inspection and horizontal overflow. On same-repository feature PRs it commits only genuine screenshot evidence and the capture note. CI never uses the private vault token.
 
 Local execution was unavailable, so GitHub Actions performed verification. Run 39474503896 passed all 8 Node tests and browser smoke checks, and committed genuine desktop/mobile screenshots using synthetic data. No live BRAIN runtime connection or production deployment is configured. See PROJECT.md and the feature PR for the latest result.
+
+## Private Sites hosting
+
+The repository now also builds a dependency-free hosted edition with ChatGPT sign-in and owner-only access. See [HOSTING.md](HOSTING.md) for the runtime configuration and security boundary. `npm run build` creates the standalone Worker; no runtime packages are needed.
+
+The initial Site uses labelled sample data. A private published link is not proof of a live vault connection. Configure a vault-scoped `GITHUB_TOKEN` through protected hosting settings, then set `DASHBOARD_DEMO=0` while keeping `BRAIN_READ_ONLY=1` for the first read. No token is embedded in the source or preview. The standalone Node edition remains available.

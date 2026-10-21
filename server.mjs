@@ -10,6 +10,7 @@ export function createDashboard(env=process.env,githubFetch=fetch) {
  const origin=new URL(env.APP_ORIGIN||'http://localhost:'+port).origin;
  const secure=origin.startsWith('https://');
  const demo=env.DASHBOARD_DEMO==='1';
+ const readOnly=env.BRAIN_READ_ONLY==='1';
  const password=env.DASHBOARD_PASSWORD||'';
  const configured=password.length>=16;
  const salt=randomBytes(16),digest=scryptSync(password,salt,32);
@@ -70,7 +71,7 @@ export function createDashboard(env=process.env,githubFetch=fetch) {
    const results=await Promise.allSettled(sources.map(readNote));
    const notes=[],errors=[];
    results.forEach((r,i)=>r.status==='fulfilled'?notes.push(r.value):errors.push({sourceId:sources[i].id,label:sources[i].label,message:r.reason.message}));
-   return {demo:false,notes,errors,fetchedAt:new Date().toISOString(),writable:true};
+   return {demo:false,notes,errors,fetchedAt:new Date().toISOString(),writable:!readOnly};
   })();
   try{const result=await loading;cache=result;cacheAt=Date.now();return result;}finally{loading=null;}
  }
@@ -104,6 +105,7 @@ export function createDashboard(env=process.env,githubFetch=fetch) {
     }
     if(url.pathname==='/api/brain'&&req.method==='GET')return send(res,200,await snapshot(url.searchParams.get('refresh')==='1'));
     if(['/api/task','/api/capture'].includes(url.pathname)&&req.method==='POST') {
+     if(readOnly)return send(res,403,{error:'BRAIN is connected in read-only mode.'});
      if(demo)return send(res,403,{error:'Sample mode is read-only. Connect BRAIN to save real tasks.'});
      if(!repo||!token)return send(res,503,{error:'Connect BRAIN before saving.'});
      const input=await body(req),source=sources.find(s=>s.id===input.sourceId);
