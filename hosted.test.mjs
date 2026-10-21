@@ -44,3 +44,26 @@ test('hosted raw files are not exposed and sign-out uses the platform path',asyn
  assert.equal((await worker.fetch(request('/.env'))).status,404);
  const data=await (await worker.fetch(request('/api/logout',{method:'POST',body:'{}'}))).json();assert.equal(data.signOutUrl,'/signout-with-chatgpt?returnTo=%2F');
 });
+
+test('private Site service status verifies real reads without returning note bodies or credentials',async()=>{
+ let calls=0;const privateText='# Private note\n- [ ] private task content\n';
+ const worker=createHostedDashboard({},async()=>{calls++;return Response.json({sha:'source-revision',encoding:'base64',content:Buffer.from(privateText).toString('base64'),size:Buffer.byteLength(privateText)});});
+ const response=await worker.fetch(new Request(origin+'/api/brain/status'),{...env,BRAIN_READ_ONLY:'1'});
+ assert.equal(response.status,200);assert.equal(response.headers.get('Cache-Control'),'no-store');
+ const text=await response.text(),data=JSON.parse(text);
+ assert.equal(calls,1);assert.equal(data.connected,true);assert.equal(data.demo,false);assert.equal(data.writable,false);assert.equal(data.sourceCount,1);
+ assert.deepEqual(data.sources,[{id:'plan',ok:true,sha:'source-revision'}]);
+ assert.ok(!text.includes('private task content'));assert.ok(!text.includes(env.GITHUB_TOKEN));assert.ok(!Object.hasOwn(data,'notes'));
+ // Full note APIs and all mutations still need the visitor identity.
+ assert.equal((await worker.fetch(new Request(origin+'/api/brain'),env)).status,401);
+ assert.equal((await worker.fetch(new Request(origin+'/api/task',{method:'POST',headers:{Origin:origin},body:'{}'}),env)).status,401);
+});
+test('connection status cannot report sample, missing credentials or provider failures as connected',async()=>{
+ let calls=0;const worker=createHostedDashboard({},async()=>{calls++;return new Response('',{status:403});});
+ for(const config of [{...env,DASHBOARD_DEMO:'1'},{}]){
+  const response=await worker.fetch(new Request(origin+'/api/brain/status'),config);assert.equal(response.status,503);assert.equal((await response.json()).connected,false);
+ }
+ assert.equal(calls,0);
+ const response=await worker.fetch(new Request(origin+'/api/brain/status'),env);const data=await response.json();
+ assert.equal(response.status,502);assert.equal(data.connected,false);assert.equal(data.sourceCount,0);assert.equal(data.sources[0].ok,false);assert.ok(!JSON.stringify(data).includes(env.GITHUB_TOKEN));
+});

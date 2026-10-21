@@ -18,7 +18,10 @@ export function createHostedDashboard(assets,githubFetch=fetch) {
   try {
    const url=new URL(request.url);
    const isApi=url.pathname.startsWith('/api/');
-   if(isApi&&!request.headers.get('oai-authenticated-user-id'))return json({error:'Sign in with ChatGPT to open this private dashboard.',signInUrl:'/signin-with-chatgpt?returnTo=%2F'},401);
+   // Owner-private Sites dispatch authenticates service callers before this Worker.
+   // This bounded status route supports those callers without inventing a visitor.
+   const connectionStatus=url.pathname==='/api/brain/status'&&request.method==='GET';
+   if(isApi&&!connectionStatus&&!request.headers.get('oai-authenticated-user-id'))return json({error:'Sign in with ChatGPT to open this private dashboard.',signInUrl:'/signin-with-chatgpt?returnTo=%2F'},401);
    if(request.method!=='GET'&&request.headers.get('Origin')!==url.origin)return json({error:'Origin not allowed'},403);
    if(!isApi){
     const asset=assets[url.pathname];
@@ -48,6 +51,13 @@ export function createHostedDashboard(assets,githubFetch=fetch) {
     if(file.encoding!=='base64'||typeof file.content!=='string'||typeof file.sha!=='string')throw error('Unsupported source response.',502);
     if(file.size>300000)throw error('This source note exceeds the dashboard size limit.',413);
     return {...parseNote(source,decode(file.content),file.sha),sourceUrl:file.html_url};
+   }
+   if(connectionStatus){
+    if(demo||!repo||!token)return json({connected:false,demo,writable:false,setupRequired:!repo||!token},503);
+    const results=await Promise.allSettled(sources.map(read));
+    const sourceStatus=results.map((r,i)=>r.status==='fulfilled'?{id:sources[i].id,ok:true,sha:r.value.sha}:{id:sources[i].id,ok:false,error:r.reason.message});
+    const connected=sourceStatus.every(s=>s.ok);
+    return json({connected,demo:false,writable,sourceCount:sourceStatus.filter(s=>s.ok).length,sources:sourceStatus,checkedAt:new Date().toISOString()},connected?200:502);
    }
    if(url.pathname==='/api/brain'&&request.method==='GET'){
     if(demo)return json({demo:true,hostedAuth:true,notes:demoNotes(),errors:[],writable:false,fetchedAt:new Date().toISOString()});
