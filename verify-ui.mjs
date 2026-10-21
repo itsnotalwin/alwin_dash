@@ -43,6 +43,7 @@ try{
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Mobile layout must not overflow horizontally');
  // Expanded coverage, reference separation, searchable note bodies and readable tables.
  await page.locator('[data-view="brain"]').click();
+ await page.locator('.source-library').waitFor({state:'visible'});
  assert.equal(await page.locator('.library-row').count(),22);
  await page.getByRole('button',{name:'Australia',exact:true}).click();
  assert.equal(await page.locator('.library-row').count(),7);
@@ -55,13 +56,14 @@ try{
  assert.ok((await page.locator('#source-raw').textContent()).includes('| Measure |'));
  await page.keyboard.press('Escape');
  await page.locator('[data-view="today"]').click();
+ await page.locator('.focus-layout').waitFor({state:'visible'});
  assert.equal(await page.locator('.task-row').filter({hasText:'Reference-only document checklist example'}).count(),0);
  await page.locator('.focus-panel .pin-button').first().click();
  assert.equal(await page.locator('.focus-panel .pin-button[aria-pressed=true]').count(),1);
  // A refreshed note SHA must not erase a user's locally selected focus.
  await page.route('**/api/brain*',async route=>{const response=await route.fetch();const data=await response.json();for(const n of data.notes){n.sha+='-changed';for(const t of n.tasks)t.sha=n.sha;}await route.fulfill({response,json:data});});
  await page.getByRole('button',{name:'Refresh Brain',exact:true}).click();
- await page.getByRole('button',{name:'Refresh Brain',exact:true}).waitFor();
+ await page.waitForFunction(()=>!document.getElementById('refresh').disabled);
  assert.equal(await page.locator('.focus-panel .pin-button[aria-pressed=true]').count(),1);
  await page.locator('.focus-panel .pin-button').first().click();
  await page.unroute('**/api/brain*');
@@ -71,6 +73,7 @@ try{
   await page.setViewportSize({width,height:900});
   for(const view of ['today','australia','paige','life','brain']){
    await page.locator('[data-view="'+view+'"]').click();
+   await page.waitForFunction(v=>document.querySelector('[data-view="'+v+'"]').getAttribute('aria-current')==='page',view);
    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No overflow: '+width+' '+view);
   }
  }
@@ -81,6 +84,7 @@ try{
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Expanded source table stays within phone width');
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.locator('[data-view="today"]').click();
+ await page.locator('.focus-layout').waitFor({state:'visible'});
  assert.equal(await page.evaluate(()=>document.querySelector('#workspace').getAnimations({subtree:true}).length),0,'Reduced motion does not play spatial view animations');
  assert.deepEqual(errors,[],'No uncaught browser errors');
  const design=await readFile('web/DESIGN.md','utf8');

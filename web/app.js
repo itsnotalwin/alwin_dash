@@ -116,7 +116,7 @@ function noteCards(domain){
    details.append(summary,content);
    details.addEventListener('toggle',()=>{if(!details.open||content.children.length)return;
     const items=n.highlights?.slice(0,2)||[];
-    if(n.reference&&n.cautions?.length)content.append(node('p',{class:'reference-note'},excerpt(n.cautions[0].text,360))); 
+    if(n.reference&&n.cautions?.length)content.append(node('p',{class:'reference-note'},excerpt(n.cautions[0].text,360)));
     if(items.length)items.forEach(r=>content.append(node('h3',{},r.heading),readableNote(r.text)));
     else if(n.next.length)content.append(node('h3',{},'Recorded next action'),...n.next.slice(0,2).map(t=>node('p',{},plain(t))));
     else content.append(node('p',{class:'muted'},'Read the full note for its current record and supporting detail. No next action has been inferred.'));
