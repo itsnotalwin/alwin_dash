@@ -15,5 +15,8 @@ Node: copy .env.example to an untracked .env, set the password and origin, then 
 ## Decisions and constraints
 The user approved monochrome, then requested replacing the UI with the supplied visual reference. Root DESIGN.md records the implemented tokens. BRAIN remains canonical. Public GitHub source and screenshots contain synthetic data only. Hosted audience must remain owner-private. Sample mode and read-only access are deliberate runtime controls, never evidence of a live connection.
 
+## Coverage and interaction update — 21 October
+The current change expands the explicit allowlist to 22 notes covering move preparation, housing, evidence, Paige projects, goals, career, work hours, Shutterhaus and active builds. Reference checklists do not enter Today. Current explicit target dates beat historical prose; only milestone tables feed the roadmap. UI adds searchable sources, readable note tables, context disclosures and reduced-motion-aware navigation/focus feedback. Nineteen local tests and Worker build passed; browser capture and deployment verification are pending.
+
 ## Next action
 For unattended publishing, connect a supported CI publisher when available; the current workflow prepares release artifacts only. Review the live view as the owner. Before enabling edits, deliberately provide vault Contents write permission, change BRAIN_READ_ONLY to 0, and verify one selected reversible task edit. Capture the real final state in the canonical BRAIN handoff.

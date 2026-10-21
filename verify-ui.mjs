@@ -38,9 +38,50 @@ try{
  await page.locator('[data-view="today"]').click();
  await page.getByRole('button',{name:'Read source: Move overview'}).first().click();
  await page.locator('#source-dialog').waitFor({state:'visible'});
- assert.ok((await page.locator('#source-content').textContent()).includes('Choose the next move milestone'));
+ assert.ok((await page.locator('#source-content').textContent()).includes('choose the next move milestone'));
  await page.keyboard.press('Escape');
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Mobile layout must not overflow horizontally');
+ // Expanded coverage, reference separation, searchable note bodies and readable tables.
+ await page.locator('[data-view="brain"]').click();
+ assert.equal(await page.locator('.library-row').count(),22);
+ await page.getByRole('button',{name:'Australia',exact:true}).click();
+ assert.equal(await page.locator('.library-row').count(),7);
+ await page.getByRole('searchbox',{name:'Search connected notes'}).fill('monthly contribution');
+ assert.equal(await page.locator('.library-row').count(),1);
+ await page.getByRole('button',{name:'Read note: Move fund',exact:true}).click();
+ await page.locator('#source-content table').waitFor({state:'visible'});
+ assert.ok((await page.locator('#source-content').textContent()).includes('Intended contributions stay separate'));
+ await page.getByText('View original Markdown',{exact:true}).click();
+ assert.ok((await page.locator('#source-raw').textContent()).includes('| Measure |'));
+ await page.keyboard.press('Escape');
+ await page.locator('[data-view="today"]').click();
+ assert.equal(await page.locator('.task-row').filter({hasText:'Reference-only document checklist example'}).count(),0);
+ await page.locator('.focus-panel .pin-button').first().click();
+ assert.equal(await page.locator('.focus-panel .pin-button[aria-pressed=true]').count(),1);
+ // A refreshed note SHA must not erase a user's locally selected focus.
+ await page.route('**/api/brain*',async route=>{const response=await route.fetch();const data=await response.json();for(const n of data.notes){n.sha+='-changed';for(const t of n.tasks)t.sha=n.sha;}await route.fulfill({response,json:data});});
+ await page.getByRole('button',{name:'Refresh Brain',exact:true}).click();
+ await page.getByRole('button',{name:'Refresh Brain',exact:true}).waitFor();
+ assert.equal(await page.locator('.focus-panel .pin-button[aria-pressed=true]').count(),1);
+ await page.locator('.focus-panel .pin-button').first().click();
+ await page.unroute('**/api/brain*');
+ await page.emulateMedia({reducedMotion:'no-preference'});
+ for(const view of ['life','paige','australia','brain','today'])await page.locator('[data-view="'+view+'"]').click();
+ for(const width of [320,768,1440]){
+  await page.setViewportSize({width,height:900});
+  for(const view of ['today','australia','paige','life','brain']){
+   await page.locator('[data-view="'+view+'"]').click();
+   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No overflow: '+width+' '+view);
+  }
+ }
+ await page.locator('[data-view="australia"]').click();
+ await page.locator('[data-note="fund"] summary').click();
+ await page.locator('[data-note="fund"] table').waitFor({state:'visible'});
+ await page.setViewportSize({width:390,height:844});
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Expanded source table stays within phone width');
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.locator('[data-view="today"]').click();
+ assert.equal(await page.evaluate(()=>document.querySelector('#workspace').getAnimations({subtree:true}).length),0,'Reduced motion does not play spatial view animations');
  assert.deepEqual(errors,[],'No uncaught browser errors');
  const design=await readFile('web/DESIGN.md','utf8');
  await writeFile('web/DESIGN.md',design.replace(/Capture routes:[\s\S]*$/, 'Capture route: authenticated / in '+(hosted?'hosted':'standalone')+' synthetic mode. Required viewports: 1440×1024 and 390×844. Captured '+new Date().toISOString().slice(0,10)+' from the actual running app in Chromium using synthetic data. Files: SCREENSHOT.png (1440×1024) and SCREENSHOT-MOBILE.png (390×844), full page. Browser smoke checks cover sign-in, five views, source dialog and mobile overflow. Captures still require visual inspection.\n'));

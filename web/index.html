@@ -28,7 +28,7 @@
 <div id="shell" class="shell" hidden>
  <aside class="sidebar">
   <a class="brand" href="#today" aria-label="Alwin home">alwin<span>.</span><small>life in motion</small></a>
-  <nav aria-label="Your workspace">
+  <nav aria-label="Your workspace"><span id="nav-marker" aria-hidden="true"></span>
    <a href="#today" data-view="today"><span aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 9v12"/></svg></span> <b>Today</b></a>
    <a href="#australia" data-view="australia"><span aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5 5-2Z"/></svg></span> <b>Australia</b></a>
    <a href="#paige" data-view="paige"><span aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.7a5.5 5.5 0 0 0-7.8 0L12 5.8l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.5a5.5 5.5 0 0 0 0-7.8Z"/></svg></span> <b>For Paige</b></a>
@@ -39,7 +39,7 @@
  </aside>
  <main id="main" tabindex="-1">
   <header class="topbar"><p id="today-date"></p><div class="top-actions"><span id="connection" class="connection">Connecting…</span><button id="refresh" class="outline"><span aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7a9 9 0 1 0 1 8M20 3v5h-5"/></svg></span> Refresh Brain</button></div></header>
-  <div class="page-title"><div><h1 id="view-title">A little closer, every day.</h1><p id="view-description" class="intro">Make room for what matters. Start with one next step.</p></div><button id="add-task" class="primary" disabled>+ Add a task</button></div>
+  <div class="page-title"><div><h1 id="view-title">A little closer, every day.</h1><p id="view-description" class="intro">Make room for what matters. Start with one next step.</p></div><span id="read-mode" class="read-mode" hidden></span><button id="add-task" class="primary" disabled>+ Add a task</button></div>
   <div id="notices" aria-live="polite"></div>
   <svg class="flow-edge" viewBox="0 0 1200 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 74 C50 74 38 16 76 16 C120 16 105 83 148 83 C189 83 165 36 202 36 C240 36 211 98 255 98 C294 98 256 0 294 0 C330 0 290 74 326 74 C362 74 337 29 397 29 C454 29 449 69 505 69 C570 69 576 48 645 48 C723 48 735 83 800 83 C867 83 880 27 947 27 C1001 27 1012 74 1066 74 C1124 74 1132 42 1200 42 L1200 100 L0 100 Z"/></svg>
   <section id="workspace" aria-label="Dashboard content" aria-busy="true"><div class="loading"><span class="loading-dot"></span> Reading your source notes…</div></section>
@@ -47,9 +47,9 @@
  </main>
 </div>
 <dialog id="source-dialog" class="source-dialog" aria-labelledby="source-title">
- <div class="dialog-top"><p>Source note</p><button class="icon-button close-dialog" aria-label="Close source">×</button></div>
+ <div class="dialog-top"><p>From your vault</p><button class="icon-button close-dialog" aria-label="Close source">×</button></div>
  <h2 id="source-title"></h2><p id="source-meta" class="muted"></p><a id="source-link" target="_blank" rel="noreferrer">Open canonical note ↗</a>
- <p class="source-hint">Recorded source text. Research and historical plans may need review.</p><pre id="source-content"></pre>
+ <p class="source-hint">Recorded source text. Research and historical plans may need review.</p><div id="source-content"></div><details id="source-raw-wrap" class="raw-source"><summary>View original Markdown</summary><pre id="source-raw"></pre></details>
 </dialog>
 <dialog id="task-dialog" aria-labelledby="task-title">
  <div class="dialog-top"><p>New task</p><button class="icon-button close-dialog" aria-label="Close task form">×</button></div>
