@@ -26,8 +26,11 @@ try{
  assert.equal(await page.evaluate(()=>document.fonts.check('40px Lobster')),true,'Embedded display font loads under the CSP');
  if(hosted){assert.equal(await page.locator('#hosted-logout').getAttribute('target'),'_top');assert.ok((await page.locator('#hosted-logout').getAttribute('href')).startsWith('/signout-with-chatgpt'));}
  await page.screenshot({path:'web/SCREENSHOT.png',fullPage:true});
+ await page.setViewportSize({width:390,height:844});
+ await page.screenshot({path:'web/SCREENSHOT-MOBILE.png',fullPage:true});
  for(const [view,title]of [['australia','Your road to Australia.'],['paige','A place for the things you make.'],['life','Keep the important things moving.'],['brain','Connected to your Brain.']]){
   await page.locator('[data-view="'+view+'"]').click();await page.locator('#view-title').filter({hasText:title}).waitFor();
+  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Mobile '+view+' must not overflow');
   await page.locator('.skip').focus();await page.locator('.skip').click();
   assert.equal(await page.evaluate(()=>location.hash),'#'+view,'Skip link preserves the selected view');
   assert.equal(await page.evaluate(()=>document.activeElement.id),'main','Skip link focuses main content');
@@ -37,8 +40,6 @@ try{
  await page.locator('#source-dialog').waitFor({state:'visible'});
  assert.ok((await page.locator('#source-content').textContent()).includes('Choose the next move milestone'));
  await page.keyboard.press('Escape');
- await page.setViewportSize({width:390,height:844});
- await page.screenshot({path:'web/SCREENSHOT-MOBILE.png',fullPage:true});
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Mobile layout must not overflow horizontally');
  assert.deepEqual(errors,[],'No uncaught browser errors');
  const design=await readFile('web/DESIGN.md','utf8');
