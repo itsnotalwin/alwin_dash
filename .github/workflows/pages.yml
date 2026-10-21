@@ -1,0 +1,60 @@
+name: Publish GitHub dashboard link
+
+# GitHub Pages serves only a public redirect. The authenticated application
+# and all private BRAIN requests remain on the owner-private Site.
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/pages.yml
+      - web/entry.html
+  pull_request:
+    paths:
+      - .github/workflows/pages.yml
+      - web/entry.html
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages-${{ github.event_name == 'pull_request' && github.event.pull_request.number || 'main' }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build dashboard entry link
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Configure Pages
+        if: github.ref == 'refs/heads/main'
+        uses: actions/configure-pages@v5
+      - name: Prepare static entry point
+        run: |
+          mkdir -p build/pages
+          cp web/entry.html build/pages/index.html
+          touch build/pages/.nojekyll
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: build/pages
+  deploy:
+    name: Publish dashboard entry link
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

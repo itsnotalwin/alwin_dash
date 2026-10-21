@@ -30,3 +30,9 @@ Run `npm run package:site` from clean, committed source to reproduce it locally 
 **Publishing is still a separate authenticated Sites operation.** The currently exposed Sites tools provide short-lived source credentials and native save/deploy operations, not a supported permanent GitHub Actions publishing credential. Do not store short-lived chat credentials as Actions secrets, invent a deployment hook, or publish this hosted adapter directly to a public Worker. A prepared artifact is not proof of a deployment.
 
 For a release: open the existing Site source with a fresh credential, synchronize the chosen GitHub source commit, build/package with the Site helper, and deploy that helper's exact pushed source SHA and archive through the owner-private Sites operation. The GitHub commit SHA and Site repository commit SHA may differ; verify matching source trees. Preserve owner-only access and protected runtime settings.
+
+## GitHub website link and 404s
+
+The repository website points to `https://itsnotalwin.github.io/alwin_dash/`. `pages.yml` publishes only `web/entry.html` as the Pages index, which redirects to the existing owner-private Site. This removes the missing Pages entry point without moving the authenticated backend or private vault data to static hosting. No dashboard assets, API responses, runtime credentials or real notes are uploaded to Pages.
+
+In repository Settings → Pages, the publishing Source must be **GitHub Actions**. Enabling Actions globally is separate from configuring Pages. A successful release-package workflow is not a Pages deployment. `Publish GitHub dashboard link` publishes the entry link; `Prepare Site deployment` prepares private application releases.
