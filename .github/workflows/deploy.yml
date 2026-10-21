@@ -64,9 +64,9 @@ jobs:
         with:
           name: alwin-dash-site-${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha || github.sha }}
           path: |
-            release/site.tar.gz
-            release/site.tar.gz.sha256
-            release/release.json
+            build/site-release/site.tar.gz
+            build/site-release/site.tar.gz.sha256
+            build/site-release/release.json
           if-no-files-found: error
           retention-days: 14
           overwrite: true
@@ -75,7 +75,7 @@ jobs:
         run: |
           node --input-type=module <<'JS' >> "$GITHUB_STEP_SUMMARY"
           import {readFile} from 'node:fs/promises';
-          const release=JSON.parse(await readFile('release/release.json','utf8'));
+          const release=JSON.parse(await readFile('build/site-release/release.json','utf8'));
           console.log('## Site deployment package prepared\n');
           console.log('Source commit: `' + release.source_commit + '`\n');
           console.log('SHA-256: `' + release.archive_sha256 + '`\n');

@@ -7,4 +7,4 @@ coverage/
 dist/
 .sites-runtime/
 .sites-checkout*/
-release/
+build/

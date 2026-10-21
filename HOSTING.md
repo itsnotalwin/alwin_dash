@@ -25,7 +25,7 @@ Run npm test, npm run check, npm run build and python3 check-build.py --root . .
 
 [Prepare Site deployment](.github/workflows/deploy.yml) automatically prepares a release after successful main-branch `Dashboard checks`. Its manual action accepts main only and runs browser checks too. Relevant pull requests exercise packaging without publishing. The artifact contains `site.tar.gz`, its SHA-256 checksum and `release.json` identifying the exact source commit and existing Site. It contains public application code and synthetic fixtures, never runtime secrets or live notes. Artifacts expire after 14 days.
 
-Run `npm run package:site` from clean, committed source to reproduce it locally. It rebuilds a fresh allowlisted output directory, includes the font license and refuses dirty/untracked source. No runner runtime packages are required for automatic packaging.
+Run `npm run package:site` from clean, committed source to reproduce it locally under `build/site-release/`. It rebuilds a fresh allowlisted output directory, includes the font license and refuses dirty/untracked source. No runner runtime packages are required for automatic packaging.
 
 **Publishing is still a separate authenticated Sites operation.** The currently exposed Sites tools provide short-lived source credentials and native save/deploy operations, not a supported permanent GitHub Actions publishing credential. Do not store short-lived chat credentials as Actions secrets, invent a deployment hook, or publish this hosted adapter directly to a public Worker. A prepared artifact is not proof of a deployment.
 

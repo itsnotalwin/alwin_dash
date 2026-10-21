@@ -18,11 +18,11 @@ const modified=execFileSync('git',['diff','--name-only','HEAD'],{encoding:'utf8'
 assert.equal(modified,'','Commit source changes before packaging');
 const untracked=execFileSync('git',['ls-files','--others','--exclude-standard'],{encoding:'utf8'}).trim();
 assert.equal(untracked,'','Commit authored files before packaging');
-await mkdir('release',{recursive:true});
+await mkdir('build/site-release',{recursive:true});
 // Include the font license alongside the embedded font's Worker distribution.
 await writeFile('dist/OFL-Lobster.txt',await readFile('web/OFL-Lobster.txt'));
-execFileSync('tar',['-czf','release/site.tar.gz','-C','dist','.']);
-const digest=createHash('sha256').update(await readFile('release/site.tar.gz')).digest('hex');
-await writeFile('release/site.tar.gz.sha256',digest+'  site.tar.gz\n');
-await writeFile('release/release.json',JSON.stringify({schema_version:1,project_id:manifest.project_id,source_commit:commit,archive:'site.tar.gz',archive_sha256:digest,status:'prepared',publishing:'Authenticated Sites tooling required; never deploy the hosted adapter as a public Worker.'},null,2)+'\n');
-console.log('Prepared release/site.tar.gz for '+commit+'; this command does not publish.');
+execFileSync('tar',['-czf','build/site-release/site.tar.gz','-C','dist','.']);
+const digest=createHash('sha256').update(await readFile('build/site-release/site.tar.gz')).digest('hex');
+await writeFile('build/site-release/site.tar.gz.sha256',digest+'  site.tar.gz\n');
+await writeFile('build/site-release/release.json',JSON.stringify({schema_version:1,project_id:manifest.project_id,source_commit:commit,archive:'site.tar.gz',archive_sha256:digest,status:'prepared',publishing:'Authenticated Sites tooling required; never deploy the hosted adapter as a public Worker.'},null,2)+'\n');
+console.log('Prepared build/site-release/site.tar.gz for '+commit+'; this command does not publish.');
