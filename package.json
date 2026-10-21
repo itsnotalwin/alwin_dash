@@ -9,8 +9,9 @@
   "scripts": {
     "start": "node --env-file-if-exists=.env server.mjs",
     "test": "node --test",
-    "check": "node --check server.mjs && node --check brain.mjs && node --check web/app.js && node --check hosted.mjs && node --check build-hosted.mjs && node --check hosted-preview.mjs",
+    "check": "node --check server.mjs && node --check brain.mjs && node --check web/app.js && node --check hosted.mjs && node --check build-hosted.mjs && node --check hosted-preview.mjs && node --check package-site.mjs",
     "dev": "node hosted-preview.mjs",
-    "build": "node build-hosted.mjs"
+    "build": "node build-hosted.mjs",
+    "package:site": "node package-site.mjs"
   }
 }

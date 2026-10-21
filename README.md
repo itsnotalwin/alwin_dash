@@ -21,7 +21,7 @@ For a synthetic preview set `DASHBOARD_DEMO=1` and the dashboard password; no Gi
 
 Use a Node-capable host with HTTPS. Set `HOST=0.0.0.0`, your host’s `PORT`, and `APP_ORIGIN=https://your-dashboard-host`. Configure the password, vault repository and token through the host’s secret settings. Run `npm start`. Keep the app behind its sign-in screen; do not add a static mirror of private data. HTTPS sets Secure session cookies and HSTS.
 
-This is not a GitHub Pages app. No hosting account, runtime token or production URL was configured during authoring. A ChatGPT connector grants this conversation access; it does not automatically supply an app with runtime credentials.
+This is not a GitHub Pages app. The hosted edition is published privately through Sites; its vault runtime credential is still pending. A ChatGPT connector grants this conversation access; it does not automatically supply an app with runtime credentials.
 
 ## How BRAIN stays authoritative
 
@@ -41,10 +41,14 @@ This is not a GitHub Pages app. No hosting account, runtime token or production 
 
 The GitHub Actions workflow additionally installs the pinned Playwright test tool, captures the actual synthetic app at desktop/mobile sizes and exercises five views, login, source inspection and horizontal overflow. On same-repository feature PRs it commits only genuine screenshot evidence and the capture note. CI never uses the private vault token.
 
-Local execution was unavailable, so GitHub Actions performed verification. Run 39474503896 passed all 8 Node tests and browser smoke checks, and committed genuine desktop/mobile screenshots using synthetic data. No live BRAIN runtime connection or production deployment is configured. See PROJECT.md and the feature PR for the latest result.
+Local execution and GitHub Actions now verify all 14 tests. CI also captures genuine synthetic desktop/mobile screenshots. See PROJECT.md for current release evidence; the private hosted preview is published, with live BRAIN access still pending.
 
 ## Private Sites hosting
 
 The repository now also builds a dependency-free hosted edition with ChatGPT sign-in and owner-only access. See [HOSTING.md](HOSTING.md) for the runtime configuration and security boundary. `npm run build` creates the standalone Worker; no runtime packages are needed.
 
 The initial Site uses labelled sample data. A private published link is not proof of a live vault connection. Configure a vault-scoped `GITHUB_TOKEN` through protected hosting settings, then set `DASHBOARD_DEMO=0` while keeping `BRAIN_READ_ONLY=1` for the first read. No token is embedded in the source or preview. The standalone Node edition remains available.
+
+## Deployment workflow
+
+`.github/workflows/deploy.yml` prepares a tested, commit-stamped Site archive after successful main checks, with a manual main-branch option. It uploads the archive, checksum and metadata. Final publication remains an authenticated Sites operation; it does not automatically change the live Site. See [HOSTING.md](HOSTING.md) for the publishing boundary and next setup steps.
