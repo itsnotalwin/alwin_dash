@@ -1,0 +1,85 @@
+name: Prepare Site deployment
+
+# This prepares a deployable release. Publishing to the owner-private Site
+# remains an authenticated Sites operation, not an unauthenticated HTTP hook.
+on:
+  workflow_run:
+    workflows: [Dashboard checks]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/deploy.yml
+      - package-site.mjs
+      - build-hosted.mjs
+      - package.json
+      - .openai/hosting.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-release-${{ github.event_name == 'pull_request' && github.event.pull_request.number || 'main' }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    name: Validate and package private Site
+    if: >-
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify source
+        run: |
+          npm run check
+          npm test
+          python3 check-build.py --root .
+      - name: Browser checks for a manual release
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.0
+          npx playwright install --with-deps chromium
+          VERIFY_HOSTED=1 node verify-ui.mjs
+          # Only generated capture evidence is changed by this check.
+          git restore -- web/SCREENSHOT.png web/SCREENSHOT-MOBILE.png web/DESIGN.md
+      - name: Build and package the exact source commit
+        run: npm run package:site
+      - name: Upload deployment package
+        uses: actions/upload-artifact@v4
+        with:
+          name: alwin-dash-site-${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha || github.sha }}
+          path: |
+            release/site.tar.gz
+            release/site.tar.gz.sha256
+            release/release.json
+          if-no-files-found: error
+          retention-days: 14
+          overwrite: true
+      - name: Record release readiness
+        shell: bash
+        run: |
+          node --input-type=module <<'JS' >> "$GITHUB_STEP_SUMMARY"
+          import {readFile} from 'node:fs/promises';
+          const release=JSON.parse(await readFile('release/release.json','utf8'));
+          console.log('## Site deployment package prepared\n');
+          console.log('Source commit: `' + release.source_commit + '`\n');
+          console.log('SHA-256: `' + release.archive_sha256 + '`\n');
+          console.log('Status: **prepared; not published**.\n');
+          console.log('Publishing requires authenticated Sites tooling and the matching pushed Site source. See HOSTING.md.');
+          console.log('This workflow has no vault token and cannot change Site sharing or runtime secrets.');
+          JS

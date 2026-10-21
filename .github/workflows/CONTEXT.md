@@ -1,2 +1,4 @@
 # Dashboard checks
 check.yml runs syntax and Node integration checks, then builds the hosted Worker and starts its synthetic preview bridge for Playwright smoke checks and genuine screenshots. Same-repository pull requests can commit only screenshots and their design capture note to the feature branch. Forks cannot receive secrets. No vault token is used. Inspect evidence before declaring visual review complete.
+
+`deploy.yml` prepares a commit-stamped Site archive after successful main-branch Dashboard checks, on a manual main run, and as a packaging check for relevant PRs. Manual releases also run browser smoke checks. It uploads a checksum and release metadata, clearly labelled prepared, not published. Final owner-private publication uses authenticated Sites tools; no CI publishing credential or vault token is configured. `package-site.mjs` only archives a freshly built allowlisted dist tree, plus the font license, from clean committed source.
