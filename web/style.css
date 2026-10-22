@@ -8,10 +8,33 @@
 @media(max-width:760px){body{padding:0;background:#111}.shell{border-radius:0;box-shadow:none;min-height:100dvh;overflow:clip}.sidebar{position:relative;min-height:85px;padding:23px 23px 10px;justify-content:space-between}.brand{font-size:40px}.brand small{font-size:11px;letter-spacing:.7px}.sidebar-bottom .avatar{display:grid}.sidebar-bottom .logout{display:none}.sidebar nav{position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:10;margin:0;gap:0;justify-content:space-between;padding:6px;border:1px solid #454545;border-radius:28px}.sidebar nav a{flex:1;min-width:0;min-height:54px;flex-direction:column;gap:4px;padding:6px 3px;border-radius:21px}.sidebar nav b{font-size:11px;line-height:1.2}.sidebar nav a>span{width:19px;height:19px}.sidebar nav svg{width:19px;height:19px}.topbar{padding:8px 23px 0;gap:10px;font-size:11px;align-items:flex-start}.topbar>p{max-width:160px;padding-top:7px}.top-actions{gap:4px;align-items:flex-end;flex-direction:column}.connection{font-size:11px}.top-actions .outline{min-height:36px;font-size:11px;padding:5px 10px}.top-actions .outline svg{width:14px;height:14px}.page-title{padding:30px 23px 20px;gap:20px;align-items:flex-start;flex-wrap:wrap}h1{font-size:49px;letter-spacing:-.02em}.intro{font-size:13px;line-height:1.6;margin-top:15px;max-width:34ch}.page-title>.primary{min-height:42px;font-size:11px;margin:0}#notices{padding:0 23px}.notice{font-size:11px;padding:12px 14px;line-height:1.6;margin-bottom:12px}.notice strong{display:block;margin-bottom:3px}.flow-edge{height:60px;margin-top:9px}#workspace{padding:16px 15px 22px}.focus-layout{grid-template-columns:1fr;gap:18px}.focus-panel{padding:24px 22px 20px}.section-head{gap:10px}.section-head h2{font-size:21px}.section-head small{font-size:11px}.task-row{padding:18px 0;gap:12px}.task-copy>label{font-size:14px}.task-meta{font-size:11px;gap:5px}.pin-button{padding:0;min-width:32px}.destination{min-height:310px;padding:28px}.destination h2{font-size:55px;max-width:6em}.target{margin-top:22px}.timeline-section{padding:25px 22px;margin-top:18px}.timeline{grid-template-columns:1fr 1fr;gap:24px 16px}.timeline-section .section-head{align-items:flex-start}.timeline-section .section-head small{white-space:normal;text-align:right;max-width:105px}.duo{grid-template-columns:1fr;gap:26px}.project-row{padding:22px;border-radius:23px}.project-copy h3{font-size:29px}.brain-strip{gap:13px;padding-top:22px}.brain-strip>.text-button{margin-left:-7px}.all-actions{margin-top:22px}.all-actions>summary{padding:18px 22px;font-size:12px}.action-toolbar{padding:18px;flex-wrap:wrap}.search{max-width:none}.task-list{padding:0 20px 14px}.note-stack{grid-template-columns:1fr;gap:18px}.note-card{padding:25px}.source-row{grid-template-columns:1fr 90px;gap:10px}.source-row code{display:none}.source-row>.text-button{justify-self:end}.source-grid{padding:0}.setup{padding:28px 24px}.setup h2{font-size:36px}.footer{flex-direction:column;gap:7px;padding:10px 23px 106px;font-size:11px}dialog{padding:24px}dialog h2{font-size:32px}.source-dialog pre{font-size:12px;padding:16px}#toast{bottom:100px;right:16px}.login-page{min-height:100dvh;border-radius:0;padding:28px 18px}.login-card{padding:30px}.login-card h1{font-size:48px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important}}
 /* Interaction pass: navigation carries continuity; task selection carries feedback. */
+/* Liquid stays within the existing divider; its geometry never moves content. */
+.flow-edge{isolation:isolate;contain:paint}
+.flow-echo{fill:#bcbcbc}
+.flow-ink{fill:#111}
+.motion-toggle{display:grid;place-items:center;width:44px;min-width:44px;height:44px;border:1px solid #bcbcbc;border-radius:50%;background:transparent;color:#555}
+.motion-toggle svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.motion-toggle .play-icon,.motion-toggle[aria-pressed=true] .pause-icon{display:none}
+.motion-toggle[aria-pressed=true] .play-icon{display:block}
+.motion-toggle:hover{background:#dedede;color:#111}
+@media(max-width:760px){
+ .top-actions{display:grid;grid-template-columns:44px auto;column-gap:6px;row-gap:6px;align-items:center}
+ .top-actions .connection{grid-column:1/-1;justify-self:end}
+ .top-actions #refresh{grid-column:2}
+}
 :root{--motion-fast:140ms;--motion-state:260ms;--ease-out:cubic-bezier(.16,1,.3,1)}
 button,a,summary{ -webkit-tap-highlight-color:transparent }
-button,input,select{transition:background-color var(--motion-fast),color var(--motion-fast),border-color var(--motion-fast)}
+button,input,select{transition:background-color var(--motion-fast),color var(--motion-fast),border-color var(--motion-fast),transform 180ms var(--ease-out)}
 button:active:not(:disabled){transform:scale(.97)}
+.sidebar nav a>span{transition:transform 240ms var(--ease-out)}
+.sidebar nav a[aria-current=page]>span{transform:scale(1.08)}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){
+ .sidebar nav a:hover>span{transform:translateY(-2px)}
+ .open-project:hover{transform:rotate(-8deg)}
+ .open-project:hover svg{transform:translateX(2px) rotate(8deg)}
+ .pin-button:hover svg{transform:rotate(-12deg) scale(1.12)}
+}
+.pin-button svg{transition:transform 180ms var(--ease-out),fill 140ms}
 .sidebar nav{position:relative;isolation:isolate}
 .sidebar nav a{position:relative;z-index:1;background:transparent!important;transition:color 160ms}
 .sidebar nav a:hover:not([aria-current]){color:white;background:#333!important}
@@ -122,7 +145,8 @@ button:active:not(:disabled){transform:scale(.97)}
  .timeline{grid-template-columns:1fr}.milestone{display:grid;grid-template-columns:1fr auto;gap:8px 15px}.milestone time{margin:0}.milestone .recorded-status{grid-column:1/-1;margin:0}.milestone .source-button{grid-column:1/-1;justify-self:start}
 }
 @media(prefers-reduced-motion:reduce){
- button,input,select,.sidebar nav a,.open-project svg,.note-detail summary>svg{transition:background-color 80ms,color 80ms}
+ button,input,select,.sidebar nav a,.open-project svg,.note-detail summary>svg,.pin-button svg,.sidebar nav a>span{transition:background-color 80ms,color 80ms}
  button:active:not(:disabled),.open-project:hover svg{transform:none}
+ .sidebar nav a[aria-current=page]>span{transform:none}
  #refresh.is-refreshing{font-weight:700;text-decoration:underline;text-underline-offset:4px}
 }
