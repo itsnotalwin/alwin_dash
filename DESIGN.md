@@ -122,7 +122,7 @@ The reusable working surface has generous rounding; project cards are slightly t
 ## Components
 Primary buttons use Ink and white; outline buttons have transparent fill and a neutral stroke. Fields use a pale fill, neutral border and rounded corners. Hover stays grayscale; disabled controls reduce opacity. Navigation has a pale selected pill inside the black container and retains all five labeled views on phones.
 
-Task rows keep sans text, circular completion controls, source links and star controls. Starring selects Today's focus locally; completion remains a version-checked source edit. Source notes open as plain text in a native dialog. The loading dot is static; reduced-motion support remains enabled.
+Task rows keep sans text, circular completion controls, source links and star controls. Starring selects Today's focus locally; completion remains a version-checked source edit. Source notes open as plain text in a native dialog. The loading dot is static. State changes use bounded motion: a sliding navigation pill (280ms), view continuity (250ms), focus selection (300ms) and dialog entry (260ms), all with cubic-bezier(.16,1,.3,1). Reduced-motion removes spatial effects; refresh rotation stops with the request. Reference notes use disclosure rows, and the Brain library supports full-text search. Source Markdown is rendered as safe DOM text with contained table scrolling.
 
 ## Do's and Don'ts
 - **Do** preserve monochrome states, visible focus, source labels and readable sans-serif controls.
