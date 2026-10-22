@@ -25,9 +25,7 @@ try{
  await page.evaluate(()=>document.fonts.ready);
  assert.equal(await page.evaluate(()=>document.fonts.check('40px Lobster')),true,'Embedded display font loads under the CSP');
  if(hosted){assert.equal(await page.locator('#hosted-logout').getAttribute('target'),'_top');assert.ok((await page.locator('#hosted-logout').getAttribute('href')).startsWith('/signout-with-chatgpt'));}
- await page.screenshot({path:'web/SCREENSHOT.png',fullPage:true});
  await page.setViewportSize({width:390,height:844});
- await page.screenshot({path:'web/SCREENSHOT-MOBILE.png',fullPage:true});
  for(const [view,title]of [['australia','Your road to Australia.'],['paige','A place for the things you make.'],['life','Keep the important things moving.'],['brain','Connected to your Brain.']]){
   await page.locator('[data-view="'+view+'"]').click();await page.locator('#view-title').filter({hasText:title}).waitFor();
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Mobile '+view+' must not overflow');
@@ -68,6 +66,25 @@ try{
  await page.locator('.focus-panel .pin-button').first().click();
  await page.unroute('**/api/brain*');
  await page.emulateMedia({reducedMotion:'no-preference'});
+ // The authored liquid changes shape, stops on demand, and consumes no frames offscreen.
+ await page.evaluate(()=>scrollTo(0,0));
+ await page.waitForFunction(()=>document.querySelector('.flow-edge').dataset.flowing==='true');
+ const startShape=await page.locator('.flow-ink').getAttribute('d');
+ await page.waitForFunction(d=>document.querySelector('.flow-ink').getAttribute('d')!==d,startShape);
+ await page.getByRole('button',{name:'Pause liquid animation',exact:true}).click();
+ const pausedShape=await page.locator('.flow-ink').getAttribute('d');
+ await page.waitForTimeout(150);
+ assert.equal(await page.locator('.flow-ink').getAttribute('d'),pausedShape,'Paused liquid holds its frame');
+ await page.reload();await page.locator('#shell').waitFor({state:'visible'});
+ assert.equal(await page.getByRole('button',{name:'Play liquid animation',exact:true}).getAttribute('aria-pressed'),'true','Pause survives reload');
+ await page.getByRole('button',{name:'Play liquid animation',exact:true}).click();
+ await page.evaluate(()=>scrollTo(0,document.body.scrollHeight));
+ await page.waitForFunction(()=>document.querySelector('.flow-edge').dataset.flowing==='false');
+ const offscreenShape=await page.locator('.flow-ink').getAttribute('d');
+ await page.waitForTimeout(150);
+ assert.equal(await page.locator('.flow-ink').getAttribute('d'),offscreenShape,'Offscreen liquid stops');
+ await page.evaluate(()=>scrollTo(0,0));
+ await page.waitForFunction(()=>document.querySelector('.flow-edge').dataset.flowing==='true');
  for(const view of ['life','paige','australia','brain','today'])await page.locator('[data-view="'+view+'"]').click();
  for(const width of [320,768,1440]){
   await page.setViewportSize({width,height:900});
@@ -86,7 +103,17 @@ try{
  await page.locator('[data-view="today"]').click();
  await page.locator('.focus-layout').waitFor({state:'visible'});
  assert.equal(await page.evaluate(()=>document.querySelector('#workspace').getAnimations({subtree:true}).length),0,'Reduced motion does not play spatial view animations');
+ assert.equal(await page.locator('.flow-edge').getAttribute('data-flowing'),'false','Reduced motion stops liquid');
+ assert.equal(await page.locator('#motion-toggle').isVisible(),false,'System motion preference takes precedence');
  assert.deepEqual(errors,[],'No uncaught browser errors');
+ // Capture the shipped animated treatment, including its visible pause control.
+ await page.emulateMedia({reducedMotion:'no-preference'});
+ await page.setViewportSize({width:1440,height:1024});
+ await page.evaluate(()=>scrollTo(0,0));
+ await page.waitForFunction(()=>document.querySelector('.flow-echo').hasAttribute('d'));
+ await page.screenshot({path:'web/SCREENSHOT.png',fullPage:true});
+ await page.setViewportSize({width:390,height:844});
+ await page.screenshot({path:'web/SCREENSHOT-MOBILE.png',fullPage:true});
  const design=await readFile('web/DESIGN.md','utf8');
  await writeFile('web/DESIGN.md',design.replace(/Capture routes:[\s\S]*$/, 'Capture route: authenticated / in '+(hosted?'hosted':'standalone')+' synthetic mode. Required viewports: 1440×1024 and 390×844. Captured '+new Date().toISOString().slice(0,10)+' from the actual running app in Chromium using synthetic data. Files: SCREENSHOT.png (1440×1024) and SCREENSHOT-MOBILE.png (390×844), full page. Browser smoke checks cover sign-in, five views, source dialog and mobile overflow. Captures still require visual inspection.\n'));
  console.log('Browser checks passed; genuine synthetic-data screenshots captured.');
