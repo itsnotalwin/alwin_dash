@@ -43,3 +43,9 @@ test('recorded decisions and cautions retain full context without becoming tasks
  const n=parseNote(source,'# Plan\n## Current arrival plan\nTentative, not a booking.\n\n| Measure | Record |\n|---|---|\n| Hosting | Unconfirmed |\n## Verification overlay\nCheck the current official source.\n## Superseded gift ideas\nOld idea.','sha');
  assert.equal(n.tasks.length,0);assert.equal(n.highlights.length,1);assert.match(n.highlights[0].text,/Unconfirmed/);assert.equal(n.cautions.length,1);
 });
+
+test('reference timelines remain available in the note but never become active milestones',()=>{
+ const text='# Research\n## Timeline\n| Milestone | Date | Status |\n|---|---|---|\n| Historic research target | 2027-09-01 | Planned |';
+ const note=parseNote({...source,reference:true},text,'sha');
+ assert.deepEqual(note.milestones,[]);assert.equal(note.text,text);
+});

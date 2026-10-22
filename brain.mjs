@@ -74,7 +74,7 @@ export function parseNote(source,text,sha,fetchedAt=new Date().toISOString()) {
   const cautions=usable.filter(s=>/warning|verification overlay|reliability|data.quality|honest assessment/i.test(s.heading))
     .map(s=>({heading:s.heading,text:s.lines.join('\n').trim()})).filter(s=>s.text);
   const milestones=[];
-  for(const group of usable){
+  for(const group of source.reference?[]:usable){
     const rows=group.lines.filter(l=>/^\s*\|/.test(l)).map(l=>l.split('|').slice(1,-1).map(clean));
     const header=rows.find(r=>r.some(c=>/^(?:milestone|target date|target|date)$/i.test(c)));
     // A timesheet, research history or arbitrary dated table is not a roadmap.
